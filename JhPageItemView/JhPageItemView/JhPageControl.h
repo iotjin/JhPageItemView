@@ -1,6 +1,6 @@
 //
 //  JhPageControl.h
-//  PersonalWage
+//  
 //
 //  Created by Jh on 2018/11/7.
 //  Copyright © 2018 Jh. All rights reserved.
