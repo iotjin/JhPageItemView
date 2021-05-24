@@ -14,7 +14,7 @@
 #define Kheight  [UIScreen mainScreen].bounds.size.height
 
 /** pageControl高度 15 */
-#define pageViewHeight 15
+#define kPageViewHeight 15
 
 @interface JhPageItemView ()<UICollectionViewDelegate,UICollectionViewDataSource>
 
@@ -95,7 +95,7 @@ static NSString * const reuseIdentifier = @"Cell";
 
 - (CGSize)getItemWH {
     CGFloat viewWidth = _ViewFrame.size.width - _Jh_leftRightMargin * 2;
-    CGFloat viewHeight = _ViewFrame.size.height - _Jh_topBottomMargin * 2 - pageViewHeight;
+    CGFloat viewHeight = _ViewFrame.size.height - _Jh_topBottomMargin * 2 - kPageViewHeight;
     CGFloat itemW = (viewWidth - _Jh_itemHorizontalMargin * (_Jh_maxColumn - 1)) / _Jh_maxColumn - 1;
     CGFloat itemH = (viewHeight - _Jh_itemVerticalMargin * (_Jh_maxRow - 1)) / _Jh_maxRow - 1;
     //        CGFloat itemW = (viewWidth - _Jh_itemHorizontalMargin * (_Jh_maxColumn - 1) -1.0f) / _Jh_maxColumn;
@@ -115,6 +115,10 @@ static NSString * const reuseIdentifier = @"Cell";
         self.customlayout.numberOfItemsInPage = _Jh_maxRow * _Jh_maxColumn;
         self.customlayout.columnsInPage = _Jh_maxColumn;
     }
+    CGFloat viewWidth = _ViewFrame.size.width - _Jh_leftRightMargin * 2;
+    CGFloat viewHeight = _ViewFrame.size.height - _Jh_topBottomMargin * 2 - kPageViewHeight;
+    CGRect Collectionframe = CGRectMake(_Jh_leftRightMargin, _Jh_topBottomMargin, viewWidth, viewHeight);
+    self.collectionView.frame = Collectionframe;
     [self.collectionView reloadData];
 }
 
@@ -126,7 +130,7 @@ static NSString * const reuseIdentifier = @"Cell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     JhPageItemCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     cell.data = self.Jh_dataArray[indexPath.row];
-    cell.backgroundColor = [UIColor clearColor];
+    cell.backgroundColor = [UIColor whiteColor];
     cell.backgroundColor = [UIColor orangeColor];
     return cell;
 }
@@ -176,10 +180,10 @@ static NSString * const reuseIdentifier = @"Cell";
 - (JhPageControl *)pageControl {
     if (!_pageControl) {
         CGFloat viewHeight = _ViewFrame.size.height;
-        CGFloat pageControlHeight = pageViewHeight/2;
+        CGFloat pageControlHeight = kPageViewHeight/2;
         JhPageControl *pageControl = [[JhPageControl alloc] init];
         CGFloat pageControl_X = 0;
-        CGFloat pageControl_Y = viewHeight - pageViewHeight;
+        CGFloat pageControl_Y = viewHeight - kPageViewHeight;
         pageControl.frame = CGRectMake(pageControl_X, pageControl_Y, Kwidth, pageControlHeight);
         
         pageControl.Jh_numberOfPages = _Jh_dataArray.count / (_Jh_maxRow*_Jh_maxColumn) + 1;
@@ -194,8 +198,8 @@ static NSString * const reuseIdentifier = @"Cell";
         pageControl.Jh_pageControlStyle = _Jh_pageControlStyle;
         pageControl.hidden = _Jh_pageControlIsHidden;
         
-        //        pageControl.backgroundColor =[UIColor purpleColor];
-        _pageControl =pageControl;
+        //        pageControl.backgroundColor = [UIColor purpleColor];
+        _pageControl = pageControl;
         [self addSubview:self.pageControl];
     }
     return _pageControl;
@@ -206,11 +210,11 @@ static NSString * const reuseIdentifier = @"Cell";
         CGFloat slideBackView_Width = _Jh_slideBackView_width;
         CGFloat sliderView_Width = _Jh_sliderView_width;
         
-        CGFloat viewWidth = _ViewFrame.size.width - _Jh_leftRightMargin * 2;
-        CGFloat viewHeight = _ViewFrame.size.height - _Jh_topBottomMargin * 2;
+        CGFloat viewWidth = _ViewFrame.size.width;
+        CGFloat viewHeight = _ViewFrame.size.height;
         CGFloat slideBackView_Height = 3;
         CGFloat slideBackView_X = viewWidth/2 - slideBackView_Width/2;
-        CGFloat slideBackView_Y = viewHeight - slideBackView_Height;
+        CGFloat slideBackView_Y = viewHeight - kPageViewHeight;
         
         UIView *slideBackView = [[UIView alloc] initWithFrame:CGRectMake(slideBackView_X, slideBackView_Y, slideBackView_Width, slideBackView_Height)];
         slideBackView.backgroundColor = _Jh_otherColor;
@@ -264,7 +268,7 @@ static NSString * const reuseIdentifier = @"Cell";
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
         CGFloat viewWidth = _ViewFrame.size.width - _Jh_leftRightMargin * 2;
-        CGFloat viewHeight = _ViewFrame.size.height - _Jh_topBottomMargin * 2 - pageViewHeight;
+        CGFloat viewHeight = _ViewFrame.size.height - _Jh_topBottomMargin * 2 - kPageViewHeight;
         CGRect Collectionframe = CGRectMake(_Jh_leftRightMargin, _Jh_topBottomMargin, viewWidth, viewHeight);
         if (_Jh_layoutStyle == JhSystemHorizontalArrangement) {
             _collectionView = [[UICollectionView alloc] initWithFrame:Collectionframe collectionViewLayout:self.layout];

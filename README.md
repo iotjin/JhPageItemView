@@ -18,14 +18,15 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
 
 - (JhPageItemView *)pageItemView {
     if (!_pageItemView) {
-        CGRect frame = CGRectMake(0, 100, Kwidth, 90*2+3*2+5*2);
+        CGRect frame = CGRectMake(0, 100, Kwidth, 90*2+5*2+10*2);
         JhPageItemView *view = [[JhPageItemView alloc]initWithFrame:frame withmaxColumn:5 maxRow:2];
         view.backgroundColor = [UIColor redColor];
-        view.Jh_topBottomMargin = 3; //上下距离初始位置间距
+        view.Jh_topBottomMargin = 10; //上下距离初始位置间距
         view.Jh_leftRightMargin = 10; //左右距离初始位置间距
         view.Jh_itemHorizontalMargin = 5.f;
         view.Jh_itemVerticalMargin = 5.f;
         view.Jh_currentColor = [UIColor greenColor];
+//        view.Jh_otherColor = [UIColor grayColor];
         view.Jh_layoutStyle = JhSystemHorizontalArrangement;
         view.delegate = self;
         self.pageItemView = view;
