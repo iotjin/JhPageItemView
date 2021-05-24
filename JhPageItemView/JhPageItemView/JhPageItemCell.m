@@ -12,23 +12,14 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    // Initialization code
-    
-    
-    
-    
+
 }
 
-
--(void)setData:(JhPageItemModel *)data{
-    _data=data;
-
+- (void)setData:(JhPageItemModel *)data {
+    _data = data;
+    
     self.customTextLabel.text = data.text;
     self.imgView.image = [UIImage imageNamed:data.img];
-
-
 }
-
-
 
 @end

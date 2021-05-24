@@ -11,8 +11,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface JhPageItemModel : NSObject
-@property(nonatomic,copy) NSString *text;
-@property(nonatomic,copy) NSString *img;
+
+@property (nonatomic,   copy) NSString *text;
+@property (nonatomic,   copy) NSString *img;
+
 
 @end
 

@@ -16,22 +16,20 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
 ```
 @property (nonatomic, strong) JhPageItemView *pageItemView;
 
--(JhPageItemView *)pageItemView{
+- (JhPageItemView *)pageItemView {
     if (!_pageItemView) {
-        
-        CGRect femwe =  CGRectMake(0, 100, Kwidth, 90*2+3*2+5*2);
-        JhPageItemView *view =  [[JhPageItemView alloc]initWithFrame:femwe withmaxColumn:5 maxRow:2];
+        CGRect frame = CGRectMake(0, 100, Kwidth, 90*2+3*2+5*2);
+        JhPageItemView *view = [[JhPageItemView alloc]initWithFrame:frame withmaxColumn:5 maxRow:2];
         view.backgroundColor = [UIColor redColor];
-        view.kTopBottomMargin = 3;//上下距离初始位置间距
-        view.kLeftRightMargin = 10;//左右距离初始位置间距
-        view.itemHorizontalMargin = 5.f;
-        view.itemVerticalMargin = 5.f;
-        view.current_BGColor=[UIColor greenColor];
-        view.layoutStyle = JhSystemHorizontalArrangement;
-        view.delegate =self;
+        view.Jh_topBottomMargin = 3; //上下距离初始位置间距
+        view.Jh_leftRightMargin = 10; //左右距离初始位置间距
+        view.Jh_itemHorizontalMargin = 5.f;
+        view.Jh_itemVerticalMargin = 5.f;
+        view.Jh_currentColor = [UIColor greenColor];
+        view.Jh_layoutStyle = JhSystemHorizontalArrangement;
+        view.delegate = self;
         self.pageItemView = view;
-        [self.view addSubview: self.pageItemView];
-        
+        [self.view addSubview:self.pageItemView];
     }
     return _pageItemView;
 }
@@ -40,7 +38,7 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
      
     //UIcollectionview 默认样式
     [self pageItemView];
-    self.pageItemView.dataArray = self.dataArray;
+    self.pageItemView.Jh_dataArray = self.dataArray;
 
 
 ```
@@ -49,28 +47,24 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
 ```
 @property (nonatomic, strong) JhPageItemView *pageItemView2;
 
--(JhPageItemView *)pageItemView2{
+- (JhPageItemView *)pageItemView2 {
     if (!_pageItemView2) {
-        
-        CGRect femwe =  CGRectMake(0, 350, Kwidth, 90*2+5*2+5*2);
-        JhPageItemView *view =  [[JhPageItemView alloc]initWithFrame:femwe withmaxColumn:5 maxRow:2];
+        CGRect frame = CGRectMake(0, 350, Kwidth, 90*2+5*2+5*2);
+        JhPageItemView *view = [[JhPageItemView alloc]initWithFrame:frame withmaxColumn:5 maxRow:2];
         view.backgroundColor = [UIColor redColor];
-        view.kTopBottomMargin = 5;//上下距离初始位置间距
-        view.kLeftRightMargin = 10;
-        view.itemHorizontalMargin = 5.f;
-        view.itemVerticalMargin = 5.f;
-        view.current_BGColor=[UIColor yellowColor];
-        view.layoutStyle = JhCustomHorizontalArrangement;
-        
-        view.PageControlStyle = JhPageControlStyelDotAndRectangle;//圆点 + 长条 样式
-        view.PageControlContentMode = JhPageControlContentModeRight;
-        view.PageControlMarginSpacing = 10;
-        view.PageControlSpacing = 5;
-
-        view.delegate =self;
+        view.Jh_topBottomMargin = 5;
+        view.Jh_leftRightMargin = 10;
+        view.Jh_itemHorizontalMargin = 5.f;
+        view.Jh_itemVerticalMargin = 5.f;
+        view.Jh_currentColor = [UIColor yellowColor];
+        view.Jh_layoutStyle = JhCustomHorizontalArrangement;
+        view.Jh_pageControlStyle = JhPageControlStyelDotAndRectangle;//圆点 + 长条 样式
+        view.Jh_pageControlAlignmentStyle = JhControlAlignmentStyleRight;
+        view.Jh_pageControlMarginSpacing = 10;
+        view.Jh_pageControlSpacing = 5;
+        view.delegate = self;
         self.pageItemView2 = view;
-        [self.view addSubview: self.pageItemView2];
-        
+        [self.view addSubview:self.pageItemView2];
     }
     return _pageItemView2;
 }
@@ -78,7 +72,7 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
 
     // 自定义样式
     [self pageItemView2];
-    self.pageItemView2.dataArray = self.dataArray;
+    self.pageItemView2.Jh_dataArray = self.dataArray;
 
 
 ```
@@ -87,30 +81,26 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
 ```
 @property (nonatomic, strong) JhPageItemView *pageItemView3;
 
--(JhPageItemView *)pageItemView3{
+- (JhPageItemView *)pageItemView3 {
     if (!_pageItemView3) {
-        
-        CGRect femwe =  CGRectMake(0, 600, Kwidth, 90*1+5*2+5*2);
-        JhPageItemView *view =  [[JhPageItemView alloc]initWithFrame:femwe withmaxColumn:5 maxRow:1];
+        CGRect frame = CGRectMake(0, 600, Kwidth, 90*1+5*2+5*2);
+        JhPageItemView *view =  [[JhPageItemView alloc]initWithFrame:frame withmaxColumn:5 maxRow:1];
         view.backgroundColor = [UIColor redColor];
-        view.kTopBottomMargin = 5; //上下距离初始位置间距
-        view.kLeftRightMargin = 10;//左右距离初始位置间距
-        view.itemHorizontalMargin = 5.f;
-        view.itemVerticalMargin = 5.f;
-        view.current_BGColor = [UIColor greenColor];
-        
-        view.layoutStyle = JhCustomHorizontalArrangement;
-        view.PageControlContentMode = JhPageControlContentModeLeft;
-        view.PageControlStyle = JhPageControlStyelRectangle;//长条样式
-        view.PageControlMarginSpacing =10;
-        view.PageControlSpacing = 5;
-        
-        view.delegate =self;
+        view.Jh_topBottomMargin = 5;
+        view.Jh_leftRightMargin = 10;
+        view.Jh_itemHorizontalMargin = 5.f;
+        view.Jh_itemVerticalMargin = 5.f;
+        view.Jh_currentColor = [UIColor greenColor];
+        view.Jh_layoutStyle = JhCustomHorizontalArrangement;
+        view.Jh_pageControlAlignmentStyle = JhControlAlignmentStyleLeft;
+        view.Jh_pageControlStyle = JhPageControlStyelRectangle;//长条样式
+        view.Jh_pageControlMarginSpacing = 10;
+        view.Jh_pageControlSpacing = 5;
+//        view.Jh_pageControlIsHidden = YES;
+        view.delegate = self;
         self.pageItemView3 = view;
         [self.view addSubview: self.pageItemView3];
-        
-//        view.pageControlIsHidden = YES;//是否隐藏
-        
+
     }
     return _pageItemView3;
 }
@@ -118,7 +108,7 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
 
     // 自定义样式
     [self pageItemView3];
-    self.pageItemView3.dataArray = self.dataArray;
+    self.pageItemView3.Jh_dataArray = self.dataArray;
 
 
 ```
@@ -127,10 +117,9 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
 
 ```
 
-- (void)JhPageItemViewDelegate:(JhPageItemView *)JhPageItemViewDeleagte indexPath:(NSIndexPath * )indexPath{
-    
+#pragma mark - JhPageItemViewDelegate
+- (void)JhPageItemViewDelegate:(JhPageItemView *)JhPageItemViewDeleagte indexPath:(NSIndexPath * )indexPath {
     NSLog(@"点击cell --- indexPath --- %@",indexPath);
-    
 }
 
 ```

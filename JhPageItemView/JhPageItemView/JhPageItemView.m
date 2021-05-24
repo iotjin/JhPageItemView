@@ -7,8 +7,6 @@
 //
 
 #import "JhPageItemView.h"
-
-
 #import "JhPageItemCell.h"
 #import "JhCustomHorizontalLayout.h"
 
@@ -20,18 +18,18 @@
 
 @interface JhPageItemView ()<UICollectionViewDelegate,UICollectionViewDataSource>
 
-
 @property (nonatomic, strong) JhPageControl *pageControl;
 
 @property (nonatomic, strong) UICollectionView  *collectionView;
 
 @property (nonatomic, assign) CGRect ViewFrame;
 
-@property (nonatomic, strong) UICollectionViewLayout *layout;
+@property (nonatomic, strong) UICollectionViewFlowLayout *layout;
 
 @property (nonatomic, strong) JhCustomHorizontalLayout *customlayout;
 
 @property (nonatomic, strong) UIView *slideBackView;
+
 @property (nonatomic, strong) UIView *sliderView;
 
 @end
@@ -42,156 +40,141 @@
 static NSString * const reuseIdentifier = @"Cell";
 
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame withmaxColumn:(NSInteger )maxColumn maxRow:(NSInteger )maxRow {
     if (self = [super initWithFrame:frame]) {
-        _ViewFrame = frame;
-    }
-    return self;
-}
-
-
-- (instancetype)initWithFrame:(CGRect)frame withmaxColumn:(NSInteger )maxColumn maxRow:(NSInteger )maxRow{
-  
-    if (self = [super initWithFrame:frame]) {
-        
         NSAssert(maxColumn != 0, @"列数不能为0");
         NSAssert(maxRow != 0, @"行数数不能为0");
-
         // 初始化
-        [self initDataAndSubviews];
-        
+        [self initSetUp];
         _ViewFrame = frame;
-        _maxRow = maxRow;
-        _maxColumn = maxColumn;
-        
+        _Jh_maxRow = maxRow;
+        _Jh_maxColumn = maxColumn;
     }
     return self;
-
 }
 
--(void)initDataAndSubviews{
-    
-    _maxRow = 2;
-    _maxColumn =5;
-    _itemHorizontalMargin = 5.0f;
-    _itemVerticalMargin = 5.0f;
-    _kLeftRightMargin =10;
-    _kTopBottomMargin =10;
-    _layoutStyle = JhSystemHorizontalArrangement;
-    
-    _current_BGColor = [UIColor orangeColor];
-    _other_BGColor  =[UIColor lightGrayColor];
-    _slideBackView_width = 40;
-    _sliderView_width = 15;
-    _PageControlMarginSpacing = 0;
-    _PageControlSpacing = 3.0;
-    _PageControlStyle = JhPageControlStyelDefault;
-    _PageControlContentMode = JhPageControlContentModeCenter;
-    _pageControlIsHidden = NO;
-    
-   
+- (void)layoutSubviews {
+    [super layoutSubviews];
 }
 
-- (void)setDataArray:(NSArray *)dataArray{
-    _dataArray = dataArray;
+- (void)initSetUp {
+    _Jh_maxRow = 2;
+    _Jh_maxColumn = 5;
+    _Jh_itemHorizontalMargin = 5.0f;
+    _Jh_itemVerticalMargin = 5.0f;
+    _Jh_leftRightMargin = 10;
+    _Jh_topBottomMargin = 10;
+    _Jh_layoutStyle = JhSystemHorizontalArrangement;
     
-    [self collectionView];
-    [self setScrollBar];
-    
+    _Jh_currentColor = [UIColor orangeColor];
+    _Jh_otherColor = [UIColor lightGrayColor];
+    _Jh_slideBackView_width = 40;
+    _Jh_sliderView_width = 15;
+    _Jh_pageControlMarginSpacing = 0;
+    _Jh_pageControlSpacing = 3.0;
+    _Jh_pageControlStyle = JhPageControlStyelDefault;
+    _Jh_pageControlAlignmentStyle = JhControlAlignmentStyleCenter;
+    _Jh_pageControlIsHidden = NO;
 }
-
-
-
 
 #pragma mark - 滚动条的一些设置
--(void)setScrollBar{
-    
-    NSInteger num  =  _dataArray.count /(_maxRow*_maxColumn)+1;
-    NSLog(@" num %ld ",(long)num);
-   
+- (void)setScrollBar {
+    NSInteger num  =  _Jh_dataArray.count / (_Jh_maxRow * _Jh_maxColumn) + 1;
+    //    NSLog(@" num %ld ",(long)num);
     //添加滚动条
-    if (_layoutStyle == JhSystemHorizontalArrangement) {
+    if (_Jh_layoutStyle == JhSystemHorizontalArrangement) {
         [self slideBackView];
-    }else if (_layoutStyle == JhCustomHorizontalArrangement){
+    } else if (_Jh_layoutStyle == JhCustomHorizontalArrangement) {
         [self pageControl];
     }
-    
-    if (num ==1) {
+    if (num == 1) {
         self.slideBackView.hidden = YES;
         self.pageControl.hidden = YES;
     }
+}
+
+- (CGSize)getItemWH {
+    CGFloat viewWidth = _ViewFrame.size.width - _Jh_leftRightMargin * 2;
+    CGFloat viewHeight = _ViewFrame.size.height - _Jh_topBottomMargin * 2 - pageViewHeight;
+    CGFloat itemW = (viewWidth - _Jh_itemHorizontalMargin * (_Jh_maxColumn - 1)) / _Jh_maxColumn - 1;
+    CGFloat itemH = (viewHeight - _Jh_itemVerticalMargin * (_Jh_maxRow - 1)) / _Jh_maxRow - 1;
+    //        CGFloat itemW = (viewWidth - _Jh_itemHorizontalMargin * (_Jh_maxColumn - 1) -1.0f) / _Jh_maxColumn;
+    //        CGFloat itemH = (viewHeight - _Jh_itemVerticalMargin * (_Jh_maxRow - 1)- 0.5f) / _Jh_maxRow;
+    return CGSizeMake(itemW, itemH);
+}
+
+- (void)setLayoutUI{
+    if (self.Jh_layoutStyle == JhSystemHorizontalArrangement) {
+        self.layout.itemSize = [self getItemWH];
+        self.layout.minimumLineSpacing = _Jh_itemHorizontalMargin;
+        self.layout.minimumInteritemSpacing = _Jh_itemVerticalMargin;
+    } else {
+        self.customlayout.itemSize = [self getItemWH];
+        self.customlayout.minimumLineSpacing = _Jh_itemHorizontalMargin;
+        self.customlayout.minimumInteritemSpacing = _Jh_itemVerticalMargin;
+        self.customlayout.numberOfItemsInPage = _Jh_maxRow * _Jh_maxColumn;
+        self.customlayout.columnsInPage = _Jh_maxColumn;
+    }
+    [self.collectionView reloadData];
+}
+
+#pragma mark <UICollectionViewDataSource>
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return self.Jh_dataArray.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    JhPageItemCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+    cell.data = self.Jh_dataArray[indexPath.row];
+    cell.backgroundColor = [UIColor clearColor];
+    cell.backgroundColor = [UIColor orangeColor];
+    return cell;
+}
+
+#pragma mark - 点击事件
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    //     NSLog(@"点击cell --- indexPath --- %@",indexPath);
+    //    //获取UICollectionViewCell 的 cell的text
+    //    JhPageItemCell * cell2 = (JhPageItemCell *)[self collectionView:collectionView cellForItemAtIndexPath:indexPath];
+    //    NSString *text = cell2.customTextLabel.text;
+    //    NSLog(@" 点击 cell2 的text %@ ",text);
     
+    if ([self.delegate respondsToSelector:@selector(JhPageItemViewDelegate:indexPath:)]){
+        [self.delegate JhPageItemViewDelegate:self indexPath:indexPath];
+    }
 }
 
-
-- (void)setMaxColumn:(NSInteger)maxColumn{
-    _maxColumn = maxColumn;
+#pragma mark - 滑动事件
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (!self.Jh_dataArray.count) return;
+    if (_Jh_layoutStyle == JhSystemHorizontalArrangement) {
+        [UIView animateWithDuration:0.5 animations:^{
+            CGPoint offset = scrollView.contentOffset;
+            // scrollView的当前位移/scrollView的总位移=滑块的当前位移/滑块的总位移
+            //    offset/(scrollView.contentSize.width-scrollView.frame.size.width)=滑块的位移/(slideBackView.frame.size.width-sliderView.frame.size.width)
+            //    滑块距离屏幕左边的距离加上滑块的当前位移，即为滑块当前的x
+            CGRect frame = self.sliderView.frame;
+            frame.origin.x = offset.x * (self.slideBackView.frame.size.width - self.sliderView.frame.size.width) / (scrollView.contentSize.width - scrollView.frame.size.width);
+            
+            if (frame.origin.x < 0) {
+                frame.origin.x = 0;
+            }
+            if (frame.origin.x > (self.slideBackView.bounds.size.width-self.sliderView.bounds.size.width)) {
+                frame.origin.x = self.slideBackView.bounds.size.width-self.sliderView.bounds.size.width;
+            }
+            self.sliderView.frame = frame;
+        }];
+    } else if (_Jh_layoutStyle == JhCustomHorizontalArrangement) {
+        CGFloat x = scrollView.contentOffset.x;
+        //        NSLog(@" x %f ",x);
+        CGFloat width = _ViewFrame.size.width;
+        int currentPage = (int)(x/width + 0.5) % self.Jh_dataArray.count;
+        _pageControl.Jh_currentPage = currentPage;
+    }
 }
 
-- (void)setMaxRow:(NSInteger)maxRow{
-    _maxRow = maxRow;
-}
-
-- (void)setItemHorizontalMargin:(CGFloat)itemHorizontalMargin{
-    _itemHorizontalMargin =itemHorizontalMargin;
-    
-}
-- (void)setItemVerticalMargin:(CGFloat)itemVerticalMargin{
-    _itemVerticalMargin = itemVerticalMargin;
-}
-- (void)setKLeftRightMargin:(CGFloat)kLeftRightMargin{
-    _kLeftRightMargin =kLeftRightMargin;
-}
--(void)setKTopBottomMargin:(CGFloat)kTopBottomMargin{
-    _kTopBottomMargin = kTopBottomMargin;
-}
-
-- (void)setLayoutStyle:(JhLayoutStyle)layoutStyle{
-    _layoutStyle =layoutStyle;
-}
-
--(void)setSlideBackView_width:(CGFloat)slideBackView_width{
-    _slideBackView_width =slideBackView_width;
-}
--(void)setSliderView_width:(CGFloat)sliderView_width{
-    _sliderView_width =sliderView_width;
-}
-
-- (void)setOther_BGColor:(UIColor *)other_BGColor{
-    _other_BGColor=other_BGColor;
-}
--(void)setCurrent_BGColor:(UIColor *)current_BGColor{
-    _current_BGColor =current_BGColor;
-}
-- (void)setPageControlIsHidden:(BOOL)pageControlIsHidden{
-    _pageControlIsHidden = pageControlIsHidden;
-}
-
--(void)setPageControlContentMode:(JhPageControlContentMode)PageControlContentMode{
-    _PageControlContentMode = PageControlContentMode;
-}
--(void)setPageControlStyle:(JhPageControlStyle)PageControlStyle{
-    _PageControlStyle = PageControlStyle;
-}
-
--(void)setPageControlSpacing:(CGFloat)PageControlSpacing{
-    _PageControlSpacing = PageControlSpacing;
-}
--(void)setPageControlMarginSpacing:(CGFloat)PageControlMarginSpacing{
-    _PageControlMarginSpacing = PageControlMarginSpacing;
-}
-
--(void)layoutSubviews{
-    [super layoutSubviews];
-    
-    
-}
-
-
--(JhPageControl *)pageControl{
+- (JhPageControl *)pageControl {
     if (!_pageControl) {
-        
         CGFloat viewHeight = _ViewFrame.size.height;
         CGFloat pageControlHeight = pageViewHeight/2;
         JhPageControl *pageControl = [[JhPageControl alloc] init];
@@ -199,152 +182,94 @@ static NSString * const reuseIdentifier = @"Cell";
         CGFloat pageControl_Y = viewHeight - pageViewHeight;
         pageControl.frame = CGRectMake(pageControl_X, pageControl_Y, Kwidth, pageControlHeight);
         
-        pageControl.numberOfPages = _dataArray.count /(_maxRow*_maxColumn)+1;
-        pageControl.currentPage = 0;
-        pageControl.otherColor = _other_BGColor;
-        pageControl.currentColor = _current_BGColor;
-        pageControl.PageControlContentMode = _PageControlContentMode;
-        pageControl.controlSpacing = _PageControlSpacing;
-        pageControl.marginSpacing = _PageControlMarginSpacing;
-//        pageControl.currentBkImg = [UIImage imageNamed:@"lunbochangtu"];
-//        pageControl.controlSize = CGSizeMake(15, 2);//如果设置PageControlStyle,则失效
-        pageControl.PageControlStyle = _PageControlStyle;
-        pageControl.hidden = _pageControlIsHidden;
-
-//        pageControl.backgroundColor =[UIColor purpleColor];
+        pageControl.Jh_numberOfPages = _Jh_dataArray.count / (_Jh_maxRow*_Jh_maxColumn) + 1;
+        pageControl.Jh_currentPage = 0;
+        pageControl.Jh_otherColor = _Jh_otherColor;
+        pageControl.Jh_currentColor = _Jh_currentColor;
+        pageControl.Jh_alignmentStyle = _Jh_pageControlAlignmentStyle;
+        pageControl.Jh_controlSpacing = _Jh_pageControlSpacing;
+        pageControl.Jh_marginSpacing = _Jh_pageControlMarginSpacing;
+        //        pageControl.Jh_currentBgImg = [UIImage imageNamed:@"lunbochangtu"];
+        //        pageControl.Jh_controlSize = CGSizeMake(15, 2);//如果设置PageControlStyle,则失效
+        pageControl.Jh_pageControlStyle = _Jh_pageControlStyle;
+        pageControl.hidden = _Jh_pageControlIsHidden;
+        
+        //        pageControl.backgroundColor =[UIColor purpleColor];
         _pageControl =pageControl;
-
         [self addSubview:self.pageControl];
-
     }
     return _pageControl;
 }
 
-
--(UIView *)slideBackView{
+- (UIView *)slideBackView {
     if (!_slideBackView) {
+        CGFloat slideBackView_Width = _Jh_slideBackView_width;
+        CGFloat sliderView_Width = _Jh_sliderView_width;
         
-        CGFloat slideBackView_Width = _slideBackView_width;
-        CGFloat sliderView_Width = _sliderView_width;
-        
-        CGFloat viewWidth = _ViewFrame.size.width-_kLeftRightMargin*2;
-        CGFloat viewHeight = _ViewFrame.size.height-_kTopBottomMargin*2;
+        CGFloat viewWidth = _ViewFrame.size.width - _Jh_leftRightMargin * 2;
+        CGFloat viewHeight = _ViewFrame.size.height - _Jh_topBottomMargin * 2;
         CGFloat slideBackView_Height = 3;
-        CGFloat slideBackView_X = viewWidth/2 -slideBackView_Width/2;
+        CGFloat slideBackView_X = viewWidth/2 - slideBackView_Width/2;
         CGFloat slideBackView_Y = viewHeight - slideBackView_Height;
-
-        UIView *slideBackView=[[UIView alloc] initWithFrame:CGRectMake(slideBackView_X, slideBackView_Y, slideBackView_Width, slideBackView_Height)];
-        slideBackView.backgroundColor = _other_BGColor;
-        slideBackView.layer.cornerRadius = slideBackView_Height/2;
+        
+        UIView *slideBackView = [[UIView alloc] initWithFrame:CGRectMake(slideBackView_X, slideBackView_Y, slideBackView_Width, slideBackView_Height)];
+        slideBackView.backgroundColor = _Jh_otherColor;
+        slideBackView.layer.cornerRadius = slideBackView_Height / 2;
         _slideBackView = slideBackView;
         [self addSubview:self.slideBackView];
         
         UIView *sliderView = [[UIView alloc] init];
-        sliderView.frame=CGRectMake(0,0, sliderView_Width, slideBackView_Height);
-        sliderView.backgroundColor = _current_BGColor;
-        sliderView.layer.cornerRadius = slideBackView_Height/2;
-        _sliderView =sliderView;
-        
+        sliderView.frame = CGRectMake(0, 0, sliderView_Width, slideBackView_Height);
+        sliderView.backgroundColor = _Jh_currentColor;
+        sliderView.layer.cornerRadius = slideBackView_Height / 2;
+        _sliderView = sliderView;
         [_slideBackView addSubview:_sliderView];
-
-        _slideBackView.hidden = _pageControlIsHidden;
-        
-        
+        _slideBackView.hidden = _Jh_pageControlIsHidden;
     }
     return _slideBackView;
 }
 
-
--(UICollectionViewLayout *)layout{
+- (UICollectionViewFlowLayout *)layout {
     if (!_layout) {
-        
-        CGFloat viewWidth = _ViewFrame.size.width-_kLeftRightMargin*2 ;
-        CGFloat viewHeight = _ViewFrame.size.height-_kTopBottomMargin*2 -pageViewHeight;
-        CGFloat itemW = (viewWidth - _itemHorizontalMargin * (_maxColumn - 1)) / _maxColumn -1;
-        CGFloat itemH = (viewHeight - _itemVerticalMargin * (_maxRow - 1)) / _maxRow -1;
-        
-        //        CGFloat itemW = (viewWidth - _itemHorizontalMargin * (_maxColumn - 1) -1.0f) / _maxColumn;
-        //        CGFloat itemH = (viewHeight - _itemVerticalMargin * (_maxRow - 1)- 0.5f) / _maxRow;
-        
-        UICollectionViewFlowLayout *layout =[[UICollectionViewFlowLayout alloc] init];
+        UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         //设置水平滚动
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         //设置每个cell的尺寸
-        layout.itemSize = CGSizeMake(itemW, itemH);
+        layout.itemSize = [self getItemWH];
         //cell之间的水平间距  行间距
-        layout.minimumLineSpacing = _itemHorizontalMargin;
+        layout.minimumLineSpacing = _Jh_itemHorizontalMargin;
         //cell之间的垂直间距 cell间距
-        layout.minimumInteritemSpacing = _itemVerticalMargin;
+        layout.minimumInteritemSpacing = _Jh_itemVerticalMargin;
         //设置四周边距
         layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
-        
-        self.layout =layout;
-        
+        self.layout = layout;
     }
     return _layout;
 }
 
-
-
--(JhCustomHorizontalLayout *)customlayout{
+- (JhCustomHorizontalLayout *)customlayout {
     if (!_customlayout) {
-        
-        
-        // UIEdgeInsets edgeInset = UIEdgeInsetsMake(10.0f, 12.0f, 10.0f, 12.0f);
-        //        CGFloat columns = 5;
-        //        CGFloat itemHeight = 90.0f;
-        //        CGFloat HorizontalMargin = _itemHorizontalMargin;
-        //        //
-        //        CGFloat itemWidth = (viewWidth - edgeInset.left - edgeInset.right - columns * HorizontalMargin + HorizontalMargin) / columns;
-        //
-        //        HPHorizontalScrollFlowLayout * layout = [[HPHorizontalScrollFlowLayout alloc] init];
-        //        layout.itemSize = CGSizeMake(itemWidth, itemHeight);
-        //        layout.minimumLineSpacing = HorizontalMargin;
-        //        layout.minimumInteritemSpacing = _itemVerticalMargin;
-        //        layout.numberOfItemsInPage = 10;
-        //        layout.columnsInPage = columns;
-        //        layout.pageInset = edgeInset;
-        
-        
-        
-        CGFloat viewWidth = _ViewFrame.size.width-_kLeftRightMargin*2 ;
-        CGFloat viewHeight = _ViewFrame.size.height-_kTopBottomMargin*2 -pageViewHeight;
-        CGFloat itemW = (viewWidth - _itemHorizontalMargin * (_maxColumn - 1)) / _maxColumn -1;
-        CGFloat itemH = (viewHeight - _itemVerticalMargin * (_maxRow - 1)) / _maxRow -1;
-        
-        //        CGFloat itemW = (viewWidth - _itemHorizontalMargin * (_maxColumn - 1) -1.0f) / _maxColumn;
-        //        CGFloat itemH = (viewHeight - _itemVerticalMargin * (_maxRow - 1)- 0.5f) / _maxRow;
-        
-        JhCustomHorizontalLayout * layout = [[JhCustomHorizontalLayout alloc] init];
-        layout.itemSize = CGSizeMake(itemW, itemH);
-        layout.minimumLineSpacing = _itemHorizontalMargin;
-        layout.minimumInteritemSpacing = _itemVerticalMargin;
-        layout.numberOfItemsInPage = _maxRow*_maxColumn;
-        layout.columnsInPage = _maxColumn;
+        JhCustomHorizontalLayout *layout = [[JhCustomHorizontalLayout alloc] init];
+        layout.itemSize =  [self getItemWH];
+        layout.minimumLineSpacing = _Jh_itemHorizontalMargin;
+        layout.minimumInteritemSpacing = _Jh_itemVerticalMargin;
+        layout.numberOfItemsInPage = _Jh_maxRow * _Jh_maxColumn;
+        layout.columnsInPage = _Jh_maxColumn;
         layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
-        
-        self.customlayout =layout;
+        self.customlayout = layout;
     }
     return _customlayout;
 }
 
-
-
-- (UICollectionView *)collectionView{
+- (UICollectionView *)collectionView {
     if (!_collectionView) {
-        
-        CGFloat viewWidth = _ViewFrame.size.width-_kLeftRightMargin*2 ;
-        CGFloat viewHeight = _ViewFrame.size.height-_kTopBottomMargin*2 -pageViewHeight;
-        CGRect Collectionframe =CGRectMake(_kLeftRightMargin,_kTopBottomMargin, viewWidth, viewHeight);
-        
-        if (_layoutStyle == JhSystemHorizontalArrangement) {
-            
+        CGFloat viewWidth = _ViewFrame.size.width - _Jh_leftRightMargin * 2;
+        CGFloat viewHeight = _ViewFrame.size.height - _Jh_topBottomMargin * 2 - pageViewHeight;
+        CGRect Collectionframe = CGRectMake(_Jh_leftRightMargin, _Jh_topBottomMargin, viewWidth, viewHeight);
+        if (_Jh_layoutStyle == JhSystemHorizontalArrangement) {
             _collectionView = [[UICollectionView alloc] initWithFrame:Collectionframe collectionViewLayout:self.layout];
-            
-        }else if (_layoutStyle == JhCustomHorizontalArrangement){
-            
+        } else if (_Jh_layoutStyle == JhCustomHorizontalArrangement) {
             _collectionView = [[UICollectionView alloc] initWithFrame:Collectionframe collectionViewLayout:self.customlayout];
-            
         }
         
         [_collectionView registerNib:[UINib nibWithNibName:NSStringFromClass([JhPageItemCell class]) bundle:[NSBundle mainBundle]] forCellWithReuseIdentifier:reuseIdentifier];
@@ -356,94 +281,97 @@ static NSString * const reuseIdentifier = @"Cell";
         _collectionView.showsVerticalScrollIndicator = NO;
         _collectionView.showsHorizontalScrollIndicator = NO;
         _collectionView.pagingEnabled = NO;
-        
         _collectionView.backgroundColor = [UIColor yellowColor];
-        
-        
         [self addSubview:self.collectionView];
-        
     }
     return _collectionView;
 }
 
-
-#pragma mark <UICollectionViewDataSource>
-
-
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    
-    return self.dataArray.count;
-    
-}
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    JhPageItemCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
-    cell.data =self.dataArray[indexPath.row];
-    
-    cell.backgroundColor = [UIColor clearColor];
-    cell.backgroundColor = [UIColor orangeColor];
-    
-    return cell;
+- (void)setJh_dataArray:(NSArray *)Jh_dataArray {
+    _Jh_dataArray = Jh_dataArray;
+    [self collectionView];
+    [self setScrollBar];
 }
 
-#pragma mark - 点击事件
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    //     NSLog(@"点击cell --- indexPath --- %@",indexPath);
-    //    //获取UICollectionViewCell 的 cell的text
-    //    JhPageItemCell * cell2 = (JhPageItemCell *)[self collectionView:collectionView cellForItemAtIndexPath:indexPath];
-    //    NSString *text = cell2.customTextLabel.text;
-    //    NSLog(@" 点击 cell2 的text %@ ",text);
-    
-    
-    
-    if([self.delegate respondsToSelector:@selector(JhPageItemViewDelegate:indexPath:)])
-    {
-        [self.delegate JhPageItemViewDelegate:self indexPath:indexPath];
-    }
-    
-    
+- (void)setJh_maxColumn:(NSInteger)Jh_maxColumn {
+    _Jh_maxColumn = Jh_maxColumn;
+    [self setLayoutUI];
 }
 
-#pragma mark - 滑动事件
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    if (!self.dataArray.count) return;
-    
-    if (_layoutStyle == JhSystemHorizontalArrangement) {
-        
-        [UIView animateWithDuration:0.5 animations:^{
-            
-            CGPoint offset = scrollView.contentOffset;
-            // scrollView的当前位移/scrollView的总位移=滑块的当前位移/滑块的总位移
-            //    offset/(scrollView.contentSize.width-scrollView.frame.size.width)=滑块的位移/(slideBackView.frame.size.width-sliderView.frame.size.width)
-            //    滑块距离屏幕左边的距离加上滑块的当前位移，即为滑块当前的x
-            CGRect frame=self.sliderView.frame;
-            frame.origin.x = offset.x * (self.slideBackView.frame.size.width-self.sliderView.frame.size.width)/(scrollView.contentSize.width-scrollView.frame.size.width);
-            
-            if (frame.origin.x<0) {
-                frame.origin.x =0;
-            }
-            if (frame.origin.x>(self.slideBackView.bounds.size.width-self.sliderView.bounds.size.width)) {
-                frame.origin.x = self.slideBackView.bounds.size.width-self.sliderView.bounds.size.width;
-            }
-            self.sliderView.frame = frame;
-            
-        }];
-        
-        
-    }else if (_layoutStyle == JhCustomHorizontalArrangement){
-        
-        CGFloat x = scrollView.contentOffset.x;
-        //        NSLog(@" x %f ",x);
-        CGFloat width = _ViewFrame.size.width;
-        int currentPage = (int)(x/width + 0.5)%self.dataArray.count;
-        _pageControl.currentPage = currentPage;
-        
-    }
-    
+- (void)setJh_maxRow:(NSInteger)Jh_maxRow {
+    _Jh_maxRow = Jh_maxRow;
+    [self setLayoutUI];
 }
 
+- (void)setJh_itemHorizontalMargin:(CGFloat)Jh_itemHorizontalMargin {
+    _Jh_itemHorizontalMargin = Jh_itemHorizontalMargin;
+    [self setLayoutUI];
+}
+
+- (void)setJh_itemVerticalMargin:(CGFloat)Jh_itemVerticalMargin {
+    _Jh_itemVerticalMargin = Jh_itemVerticalMargin;
+    [self setLayoutUI];
+}
+
+- (void)setJh_topBottomMargin:(CGFloat)Jh_topBottomMargin {
+    _Jh_topBottomMargin = Jh_topBottomMargin;
+    [self setLayoutUI];
+}
+
+- (void)setJh_leftRightMargin:(CGFloat)Jh_leftRightMargin {
+    _Jh_leftRightMargin = Jh_leftRightMargin;
+    [self setLayoutUI];
+}
+
+- (void)setJh_layoutStyle:(JhLayoutStyle)Jh_layoutStyle {
+    _Jh_layoutStyle = Jh_layoutStyle;
+    [self setLayoutUI];
+}
+
+- (void)setJh_sliderView_width:(CGFloat)Jh_sliderView_width {
+    _Jh_sliderView_width = Jh_sliderView_width;
+    [self setLayoutUI];
+}
+
+- (void)setJh_slideBackView_width:(CGFloat)Jh_slideBackView_width {
+    _Jh_slideBackView_width = Jh_slideBackView_width;
+    [self setLayoutUI];
+}
+
+- (void)setJh_otherColor:(UIColor *)Jh_otherColor {
+    _Jh_otherColor = Jh_otherColor;
+    [self setLayoutUI];
+}
+
+- (void)setJh_currentColor:(UIColor *)Jh_currentColor {
+    _Jh_currentColor = Jh_currentColor;
+    [self setLayoutUI];
+}
+
+- (void)setJh_pageControlIsHidden:(BOOL)Jh_pageControlIsHidden {
+    _Jh_pageControlIsHidden = Jh_pageControlIsHidden;
+    [self setLayoutUI];
+}
+
+- (void)setJh_pageControlAlignmentStyle:(JhControlAlignmentStyle)Jh_pageControlAlignmentStyle {
+    _Jh_pageControlAlignmentStyle = Jh_pageControlAlignmentStyle;
+    [self setLayoutUI];
+}
+
+- (void)setJh_pageControlStyle:(JhPageControlStyle)Jh_pageControlStyle {
+    _Jh_pageControlStyle = Jh_pageControlStyle;
+    [self setLayoutUI];
+}
+
+- (void)setJh_pageControlSpacing:(CGFloat)Jh_pageControlSpacing {
+    _Jh_pageControlSpacing = Jh_pageControlSpacing;
+    [self setLayoutUI];
+}
+
+- (void)setJh_pageControlMarginSpacing:(CGFloat)Jh_pageControlMarginSpacing {
+    _Jh_pageControlMarginSpacing = Jh_pageControlMarginSpacing;
+    [self setLayoutUI];
+}
 
 
 @end

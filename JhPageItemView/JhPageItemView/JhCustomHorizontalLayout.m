@@ -16,21 +16,22 @@ UIKIT_EXTERN NSUInteger numberOfPages(NSUInteger itemsInPage, NSUInteger totalCo
 @interface JhCustomHorizontalLayout () {
     NSUInteger _numberOfPages;
 }
-@property (nonatomic, strong) NSMutableArray<UICollectionViewLayoutAttributes*> *itemsAttributes;
-@end
 
+@property (nonatomic, strong) NSMutableArray<UICollectionViewLayoutAttributes*> *itemsAttributes;
+
+@end
 
 
 @implementation JhCustomHorizontalLayout
 
 - (instancetype)init {
     if ( self = [super init] ) {
-        [self _setUp];
+        [self initSetUp];
     }
     return self;
 }
 
-- (void)_setUp {
+- (void)initSetUp {
     // 水平滑动
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     // 初始化数据
