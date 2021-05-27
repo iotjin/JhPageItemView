@@ -10,10 +10,9 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
 ## Examples
 
 
-
 * Demo1
 
-```
+```objc
 @property (nonatomic, strong) JhPageItemView *pageItemView;
 
 - (JhPageItemView *)pageItemView {
@@ -36,16 +35,14 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
 }
 
 
-     
     //UIcollectionview 默认样式
     [self pageItemView];
     self.pageItemView.Jh_dataArray = self.dataArray;
 
-
 ```
 * Demo2
 
-```
+```objc
 @property (nonatomic, strong) JhPageItemView *pageItemView2;
 
 - (JhPageItemView *)pageItemView2 {
@@ -70,16 +67,14 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
     return _pageItemView2;
 }
 
-
     // 自定义样式
     [self pageItemView2];
-    self.pageItemView2.Jh_dataArray = self.dataArray;
-
+     self.pageItemView2.Jh_dataArray = self.dataArray;
 
 ```
 * Demo3
 
-```
+```objc
 @property (nonatomic, strong) JhPageItemView *pageItemView3;
 
 - (JhPageItemView *)pageItemView3 {
@@ -111,18 +106,15 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
     [self pageItemView3];
     self.pageItemView3.Jh_dataArray = self.dataArray;
 
-
 ```
 
 * 点击事件
 
-```
-
+```objc
 #pragma mark - JhPageItemViewDelegate
 - (void)JhPageItemViewDelegate:(JhPageItemView *)JhPageItemViewDeleagte indexPath:(NSIndexPath * )indexPath {
     NSLog(@"点击cell --- indexPath --- %@",indexPath);
 }
-
 ```
 
 
