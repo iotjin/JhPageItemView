@@ -1,4 +1,5 @@
 # JhPageItemView
+
 JhPageItemView - UIcollectionView横向滚动分页,<br> 
 UICollectionViewLayout两种样式(系统样式,自定义的横排样式),<br> 
 系统样式类似于淘宝我的频道,自定义横排样式类似美团,美团外卖横排菜单。<br> 
@@ -34,12 +35,11 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
     return _pageItemView;
 }
 
-
     //UIcollectionview 默认样式
     [self pageItemView];
     self.pageItemView.Jh_dataArray = self.dataArray;
-
 ```
+
 * Demo2
 
 ```objc
@@ -70,7 +70,6 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
     // 自定义样式
     [self pageItemView2];
      self.pageItemView2.Jh_dataArray = self.dataArray;
-
 ```
 * Demo3
 
@@ -96,16 +95,13 @@ pageControl三种样式(小圆点,长条,小圆点+长条 ),也可设置位置(�
         view.delegate = self;
         self.pageItemView3 = view;
         [self.view addSubview: self.pageItemView3];
-
     }
     return _pageItemView3;
 }
 
-
     // 自定义样式
     [self pageItemView3];
     self.pageItemView3.Jh_dataArray = self.dataArray;
-
 ```
 
 * 点击事件
