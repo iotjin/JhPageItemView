@@ -79,7 +79,7 @@ static NSString * const reuseIdentifier = @"Cell";
 
 #pragma mark - 滚动条的一些设置
 - (void)setScrollBar {
-    NSInteger num  =  _Jh_dataArray.count / (_Jh_maxRow * _Jh_maxColumn) + 1;
+    NSInteger num  =  _Jh_dataArray.count / (_Jh_maxRow * _Jh_maxColumn);
     //    NSLog(@" num %ld ",(long)num);
     //添加滚动条
     if (_Jh_layoutStyle == JhSystemHorizontalArrangement) {
@@ -87,7 +87,7 @@ static NSString * const reuseIdentifier = @"Cell";
     } else if (_Jh_layoutStyle == JhCustomHorizontalArrangement) {
         [self pageControl];
     }
-    if (num == 1) {
+    if (num <= 1) {
         self.slideBackView.hidden = YES;
         self.pageControl.hidden = YES;
     }
